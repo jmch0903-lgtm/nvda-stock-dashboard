@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>엔비디아(NVDA) 최근 1개월 주식 대시보드 · AI 초안</title>
+  <style>
+    /* 기본: 토스 스타일 (Toss-inspired Clean Fintech UI) */
+    :root,
+    body[data-theme="toss"] {
+      --bg: #f2f4f6;
+      --bg-image: none;
+      --surface: #ffffff;
+      --surface-sub: #f9fafb;
+      --surface-ai: #f8f6ff;
+      --text: #191f28;
+      --text-strong: #191f28;
+      --text-muted: #4e5968;
+      --text-light: #6b7684;
+      --border: #e5e8eb;
+      --backdrop: none;
+      --nvda-green: #00a86b;
+      --danger: #f04452;
+      --accent: #3182f6;
+      --accent-soft: #e8f3ff;
+      --accent-text: #1b64da;
+      --fact-fg: #1b64da;
+      --fact-bg: #e8f3ff;
+      --fact-bd: #cce3ff;
+      --ai-fg: #7c3aed;
+      --ai-bg: #f3e8ff;
+      --ai-bd: #e9d5ff;
+      --unk-fg: #b45309;
+      --unk-bg: #fef3c7;
+      --unk-bd: #fde68a;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.035);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --notice-bg: #191f28;
+      --notice-text: #f9fafb;
+      --notice-accent: #3182f6;
+      --notice-strong: #60a5fa;
+      --tooltip-bg: #ffffff;
+      --th-bg: #f2f4f6;
+      --glossary-bg: #f3e8ff;
+      --glossary-bd: #e9d5ff;
+      --glossary-fg: #4c1d95;
+    }
+
+    /* 토글: 기존 다크 에디토리얼 · 글래스모피즘 스타일 */
+    body[data-theme="dark"] {
+      --bg: #070b12;
+      --bg-image:
+        radial-gradient(circle at 12% 8%, rgba(132, 204, 22, 0.09) 0%, transparent 38%),
+        radial-gradient(circle at 88% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 36%),
+        radial-gradient(circle at 50% 90%, rgba(168, 85, 247, 0.06) 0%, transparent 45%);
+      --surface: rgba(17, 24, 39, 0.76);
+      --surface-sub: rgba(15, 23, 42, 0.85);
+      --surface-ai: rgba(24, 18, 43, 0.72);
+      --text: #f1f5f9;
+      --text-strong: #ffffff;
+      --text-muted: #cbd5e1;
+      --text-light: #94a3b8;
+      --border: rgba(148, 163, 184, 0.16);
+      --backdrop: blur(14px);
+      --nvda-green: #84cc16;
+      --danger: #f87171;
+      --accent: #84cc16;
+      --accent-soft: rgba(132, 204, 22, 0.12);
+      --accent-text: #bef264;
+      --fact-fg: #60a5fa;
+      --fact-bg: rgba(59, 130, 246, 0.14);
+      --fact-bd: rgba(96, 165, 250, 0.35);
+      --ai-fg: #c084fc;
+      --ai-bg: rgba(168, 85, 247, 0.15);
+      --ai-bd: rgba(192, 132, 252, 0.35);
+      --unk-fg: #fbbf24;
+      --unk-bg: rgba(245, 158, 11, 0.15);
+      --unk-bd: rgba(251, 191, 36, 0.35);
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --notice-bg: rgba(7, 11, 18, 0.92);
+      --notice-text: #e2e8f0;
+      --notice-accent: #84cc16;
+      --notice-strong: #a3e635;
+      --tooltip-bg: rgba(30, 41, 59, 0.85);
+      --th-bg: rgba(15, 23, 42, 0.95);
+      --glossary-bg: rgba(168, 85, 247, 0.14);
+      --glossary-bd: rgba(192, 132, 252, 0.25);
+      --glossary-fg: #e9d5ff;
+    }
+
+    /* 토글 3: NVIDIA 시그니처 스타일 */
+    body[data-theme="nvidia"] {
+      --bg: #050505;
+      --bg-image:
+        linear-gradient(180deg, rgba(118, 185, 0, 0.08) 0%, transparent 26%),
+        radial-gradient(circle at 85% 10%, rgba(118, 185, 0, 0.12) 0%, transparent 35%);
+      --surface: #111315;
+      --surface-sub: #181b1f;
+      --surface-ai: #141914;
+      --text: #f3f4f6;
+      --text-strong: #ffffff;
+      --text-muted: #d1d5db;
+      --text-light: #9ca3af;
+      --border: rgba(118, 185, 0, 0.24);
+      --backdrop: none;
+      --nvda-green: #76b900;
+      --danger: #ff5c5c;
+      --accent: #76b900;
+      --accent-soft: rgba(118, 185, 0, 0.15);
+      --accent-text: #9ae600;
+      --fact-fg: #9ae600;
+      --fact-bg: rgba(118, 185, 0, 0.14);
+      --fact-bd: rgba(118, 185, 0, 0.38);
+      --ai-fg: #38bdf8;
+      --ai-bg: rgba(56, 189, 248, 0.14);
+      --ai-bd: rgba(56, 189, 248, 0.35);
+      --unk-fg: #fbbf24;
+      --unk-bg: rgba(251, 191, 36, 0.14);
+      --unk-bd: rgba(251, 191, 36, 0.35);
+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --notice-bg: #000000;
+      --notice-text: #e5e7eb;
+      --notice-accent: #76b900;
+      --notice-strong: #9ae600;
+      --tooltip-bg: #1c2024;
+      --th-bg: #0c0e10;
+      --glossary-bg: rgba(118, 185, 0, 0.1);
+      --glossary-bd: rgba(118, 185, 0, 0.28);
+      --glossary-fg: #d9f99d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      background-image: var(--bg-image);
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.65;
+      font-variant-numeric: tabular-nums;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* 상단 고정 주의 배너 */
+    .notice-bar {
+      background: var(--notice-bg);
+      backdrop-filter: blur(10px);
+      color: var(--notice-text);
+      font-size: 0.82rem;
+      padding: 10px 16px;
+      text-align: center;
+      border-bottom: 2px solid var(--notice-accent);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .notice-bar strong {
+      color: var(--notice-strong);
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+    }
+
+    /* 헤더 */
+    .header {
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 26px 26px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .header-main-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .header-title-wrap {
+      flex: 1 1 340px;
+      min-width: 0;
+    }
+
+    /* 스타일 전환 토글 (오른쪽 상단) */
+    .theme-switch {
+      display: inline-flex;
+      flex-wrap: wrap;
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+      margin-left: auto;
+      max-width: 100%;
+    }
+
+    .theme-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--text-light);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .theme-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(49, 130, 246, 0.25);
+    }
+
+    body[data-theme="dark"] .theme-btn.active,
+    body[data-theme="nvidia"] .theme-btn.active {
+      color: #050505;
+      box-shadow: 0 2px 10px rgba(118, 185, 0, 0.32);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ticker-pill {
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+
+    body[data-theme="dark"] .ticker-pill {
+      background: linear-gradient(135deg, #84cc16, #4d7c0f);
+      color: #070b12;
+      border-radius: 8px;
+    }
+
+    body[data-theme="nvidia"] .ticker-pill {
+      background: #76b900;
+      color: #050505;
+      border-radius: 6px;
+      box-shadow: 0 0 14px rgba(118, 185, 0, 0.35);
+    }
+
+    .exchange-pill {
+      background: var(--surface-sub);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    h1 {
+      font-size: 1.56rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-top: 10px;
+      color: var(--text-strong);
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 0.92rem;
+      margin-top: 6px;
+    }
+
+    .meta-box {
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      min-width: 250px;
+    }
+
+    .meta-box strong {
+      color: var(--text-strong);
+    }
+
+    .meta-box div + div {
+      margin-top: 4px;
+    }
+
+    /* 배지 시스템 (사실 / AI 해석 / 미확인) */
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px 18px;
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      box-shadow: var(--shadow);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .badge-fact {
+      color: var(--fact-fg);
+      background: var(--fact-bg);
+      border-color: var(--fact-bd);
+    }
+
+    .badge-ai {
+      color: var(--ai-fg);
+      background: var(--ai-bg);
+      border-color: var(--ai-bd);
+    }
+
+    .badge-unk {
+      color: var(--unk-fg);
+      background: var(--unk-bg);
+      border-color: var(--unk-bd);
+    }
+
+    /* KPI 카드 그리드 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.18s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .kpi-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .kpi-value {
+      font-size: 1.62rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-strong);
+    }
+
+    .kpi-sub {
+      font-size: 0.82rem;
+      margin-top: 8px;
+      color: var(--text-muted);
+    }
+
+    .down {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .up {
+      color: var(--nvda-green);
+      font-weight: 700;
+    }
+
+    /* 섹션 카드 */
+    .card {
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 1.14rem;
+      font-weight: 800;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      color: var(--text-light);
+      margin-bottom: 14px;
+    }
+
+    /* 차트 영역 */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 14px 10px;
+      overflow: hidden;
+    }
+
+    .chart-tooltip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: var(--tooltip-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      min-height: 44px;
+    }
+
+    .chart-tooltip .tt-date {
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .chart-tooltip .tt-price {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text-strong);
+    }
+
+    .chart-tooltip .tt-event {
+      color: var(--danger);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    svg#priceChart {
+      width: 100%;
+      height: auto;
+      display: block;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .chart-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: filter 0.15s ease, transform 0.15s ease;
+    }
+
+    .btn:hover {
+      filter: brightness(0.96);
+      transform: translateY(-1px);
+    }
+
+    /* 테이블 */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .table-wrap.open {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    th:first-child, td:first-child,
+    th:last-child, td:last-child {
+      text-align: left;
+    }
+
+    th {
+      background: var(--th-bg);
+      color: var(--text-light);
+      font-weight: 700;
+    }
+
+    td strong {
+      color: var(--text-strong);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* 2단 레이아웃 */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .info-list {
+      list-style: none;
+    }
+
+    .info-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .info-list li:last-child {
+      border-bottom: none;
+    }
+
+    .info-key {
+      font-weight: 700;
+      color: var(--text-strong);
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* 체크리스트 */
+    .check-item {
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .check-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .check-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-strong);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .check-body {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    /* 출처 인라인 링크 */
+    .src-ref {
+      display: inline-block;
+      font-size: 0.74rem;
+      color: var(--accent-text);
+      text-decoration: none;
+      background: var(--accent-soft);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 1px 7px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    .src-ref:hover {
+      text-decoration: underline;
+    }
+
+    /* 뉴스 카드 리스트 */
+    .news-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .news-item {
+      background: var(--surface-sub);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      transition: border-color 0.18s ease;
+    }
+
+    .news-item:hover {
+      border-color: var(--accent);
+    }
+
+    .news-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-bottom: 6px;
+      min-width: 0;
+    }
+
+    .news-meta .badge {
+      white-space: normal;
+      line-height: 1.35;
+      max-width: 100%;
+    }
+
+    .news-publisher {
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .news-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.45;
+    }
+
+    .news-title a {
+      color: var(--text-strong);
+      text-decoration: none;
+    }
+
+    .news-title a:hover {
+      color: var(--accent-text);
+      text-decoration: underline;
+    }
+
+    .news-summary {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .news-link-row {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      word-break: break-all;
+    }
+
+    .news-link-row a {
+      color: var(--accent-text);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .news-link-row a:hover {
+      text-decoration: underline;
+    }
+
+    /* 사실과 해석 나란히 보기 그리드 */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .compare-pane {
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .compare-pane.fact-pane {
+      border-top: 4px solid var(--fact-fg);
+    }
+
+    .compare-pane.ai-pane {
+      border-top: 4px solid var(--ai-fg);
+      background: var(--surface-ai);
+    }
+
+    .compare-pane h2 {
+      font-size: 1.06rem;
+      font-weight: 800;
+      color: var(--text-strong);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .compare-pane ul {
+      padding-left: 18px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .compare-pane li strong {
+      color: var(--text-strong);
+    }
+
+    .compare-pane li + li {
+      margin-top: 9px;
+    }
+
+    .glossary-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--glossary-bg);
+      border: 1px solid var(--glossary-bd);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      color: var(--glossary-fg);
+    }
+
+    /* 푸터 */
+    .footer {
+      margin-top: 22px;
+      padding: 18px 22px;
+      background: var(--surface);
+      backdrop-filter: var(--backdrop);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      color: var(--text-light);
+      box-shadow: var(--shadow);
+    }
+
+    .footer strong {
+      color: var(--text-muted);
+    }
+
+    .source-list {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+
+    /* 반응형 (태블릿 / 휴대폰) */
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .two-col, .compare-grid {
+        grid-template-columns: 1fr;
+      }
+      .header-right {
+        align-items: flex-start;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        padding: 14px 12px 36px;
+      }
+      .header {
+        padding: 18px;
+      }
+      h1 {
+        font-size: 1.28rem;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .card, .compare-pane {
+        padding: 18px 16px;
+      }
+      .kpi-value {
+        font-size: 1.44rem;
+      }
+    }
+
+    /* 상단 오른쪽 액션(인쇄 + 테마 토글) */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .header-actions .theme-switch {
+      margin-left: 0;
+    }
+
+    .print-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--surface-sub);
+      color: var(--text-strong);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 7px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .print-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    /* 인쇄 / PDF 저장 전용 스타일 */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 10mm;
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body, body[data-theme="dark"], body[data-theme="nvidia"] {
+        background: #ffffff !important;
+        background-image: none !important;
+        color: #111827 !important;
+        font-size: 11px !important;
+        line-height: 1.45 !important;
+      }
+
+      .notice-bar {
+        position: static !important;
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+        border-bottom: 2px solid #111827 !important;
+        padding: 6px 10px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .notice-bar strong {
+        color: #111827 !important;
+      }
+
+      .no-print,
+      .header-actions,
+      .theme-switch,
+      .print-btn,
+      #toggleTableBtn {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .header,
+      .legend-bar,
+      .compare-pane,
+      .kpi-card,
+      .card,
+      .footer,
+      .news-item,
+      .check-item,
+      .chart-wrap,
+      .chart-tooltip,
+      .meta-box {
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-color: #d1d5db !important;
+        color: #111827 !important;
+      }
+
+      h1, h2, h3, .card-title, .kpi-value, .info-key, .check-title, .news-publisher, .news-title a, .meta-box strong, td strong {
+        color: #111827 !important;
+      }
+
+      .subtitle, .kpi-label, .kpi-sub, .card-desc, .info-list li, .check-body, .news-summary, .news-meta, .news-link-row, .footer, td, th {
+        color: #374151 !important;
+      }
+
+      .compare-grid,
+      .two-col {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px !important;
+      }
+
+      .header,
+      .compare-pane,
+      .kpi-card,
+      .card,
+      .chart-wrap,
+      .news-item,
+      .check-item,
+      .footer,
+      tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      .table-wrap {
+        display: block !important;
+        overflow: visible !important;
+        border-color: #d1d5db !important;
+      }
+
+      table {
+        min-width: 0 !important;
+        width: 100% !important;
+        font-size: 9.5px !important;
+      }
+
+      th, td {
+        padding: 5px 6px !important;
+      }
+
+      svg#priceChart {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="toss">
+  <div class="notice-bar">
+    <strong>AI 초안</strong> · <strong>저장 자료 기준 (2026-11-20 미국 장 마감)</strong> · <strong>실시간 시세가 아닙니다</strong> · 본 화면은 학습·참고용이며 투자 권유가 아닙니다.
+  </div>
+
+  <div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-top-row">
+        <div class="brand-row">
+          <span class="ticker-pill">NVDA</span>
+          <span class="exchange-pill">NASDAQ (미국 나스닥)</span>
+          <span class="exchange-pill">통화: USD ($)</span>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="print-btn" id="printBtn" title="인쇄 또는 PDF로 저장">인쇄 / PDF 저장</button>
+          <div class="theme-switch" role="group" aria-label="화면 스타일 전환">
+            <button type="button" class="theme-btn active" data-theme-target="toss">토스</button>
+            <button type="button" class="theme-btn" data-theme-target="dark">다크 글래스</button>
+            <button type="button" class="theme-btn" data-theme-target="nvidia">NVIDIA</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-main-row">
+        <div class="header-title-wrap">
+          <h1>엔비디아 (NVIDIA Corporation) 1개월 주식 대시보드</h1>
+          <p class="subtitle">초보자도 한눈에 볼 수 있도록 사실 데이터, AI 해석, 추가 확인 필요 사항을 구분해 정리했습니다.</p>
+        </div>
+        <div class="meta-box" id="metaBox">
+          <div><strong>자료 기준일:</strong> 2026-11-20 (장 마감)</div>
+          <div><strong>조회 기간:</strong> 2026-10-21 ~ 2026-11-20 (23거래일)</div>
+          <div><strong>데이터 출처:</strong> 로컬 저장 자료 (data/nvda_1m_2026-11-20.json)</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 구분 범례 -->
+    <div class="legend-bar">
+      <strong>정보 구분 기준:</strong>
+      <span><span class="badge badge-fact">사실</span> 공개 자료에서 확인된 수치·날짜·발표</span>
+      <span><span class="badge badge-ai">AI 해석</span> 입문자 이해를 돕기 위한 쉬운 풀이</span>
+      <span><span class="badge badge-unk">미확인 / 확인 필요</span> 저장 자료만으로 확정할 수 없는 항목</span>
+    </div>
+
+    <!-- [핵심 우선] 사실과 해석을 나란히 보는 1분 요약 -->
+    <section class="compare-grid" aria-label="핵심 요약: 사실과 AI 해석">
+      <div class="compare-pane fact-pane">
+        <h2>핵심 사실 (확인된 숫자·날짜) <span class="badge badge-fact">사실</span></h2>
+        <ul>
+          <li><strong>1개월 주가 하락:</strong> 종가(장 마감 가격)가 <strong>$221.97</strong>(2026-10-21)에서 <strong>$125.53 USD</strong>(2026-11-20)으로 <strong>43.45%</strong> 내렸습니다. <a class="src-ref" href="https://stockanalysis.com/stocks/nvda/history/" target="_blank" rel="noopener noreferrer">출처: StockAnalysis</a></li>
+          <li><strong>3분기 실적 발표(11/17):</strong> 회사가 올린 매출(번 돈)은 <strong>$115.8B</strong>(1,158억 달러)로 1년 전보다 <strong>103%</strong> 늘었습니다. <a class="src-ref" href="https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/" target="_blank" rel="noopener noreferrer">출처: NVIDIA IR</a></li>
+          <li><strong>주요 발표·보도:</strong> 11월 12일 젠슨 황 CEO 사임 발표<a class="src-ref" href="https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition" target="_blank" rel="noopener noreferrer">출처: NVIDIA Newsroom</a>와 11월 20일 SEC(미국 증권감독기구) 조사 보도<a class="src-ref" href="https://www.fool.com/investing/2026/11/20/nvidia-stock-plunge-wipes-out-nearly-usd500-billion-in-one-day-as-sec-reportedly-probes-its-accounting/" target="_blank" rel="noopener noreferrer">출처: Motley Fool</a>가 있었습니다.</li>
+        </ul>
+      </div>
+
+      <div class="compare-pane ai-pane">
+        <h2>쉬운 해석 (입문자용 풀이) <span class="badge badge-ai">AI 해석</span></h2>
+        <ul>
+          <li><strong>장사는 잘됐는데 주가는 내렸습니다:</strong> 3분기 매출은 크게 늘었지만, 한 달간 주가는 반대로 크게 떨어졌습니다.</li>
+          <li><strong>큰 뉴스가 나온 날 주가가 출렁였습니다:</strong> CEO 교체(11/12)와 SEC 조사 보도(11/20)가 나온 날 주가가 크게 내렸습니다. 다만 <strong>뉴스 하나만이 주가 하락의 원인이라고 단정할 수는 없으며</strong>, 시장 분위기와 투자 심리도 함께 영향을 주었을 수 있습니다.</li>
+        </ul>
+        <div class="glossary-note">
+          <strong>쉬운 용어:</strong> <strong>종가</strong>(하루 거래가 끝날 때의 가격) · <strong>시가총액</strong>(회사 전체의 몸값) · <strong>가이던스</strong>(회사가 직접 내놓은 다음 분기 예상치)
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI 카드 -->
+    <section class="kpi-grid" aria-label="핵심 지표 요약">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">최근 종가 (하루 마감 가격 · 11/20)</span>
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <div class="kpi-value">$125.53 <span style="font-size:0.85rem;font-weight:600;color:var(--text-light);">USD</span></div>
+        <div class="kpi-sub">전날($145.98)보다 <span class="down">-$20.45 (-14.01%)</span> <a class="src-ref" href="https://stockanalysis.com/stocks/nvda/history/" target="_blank" rel="noopener noreferrer">출처: StockAnalysis</a></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">최근 1개월 주가 변동</span>
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <div class="kpi-value down">-43.45%</div>
+        <div class="kpi-sub">10/21 $221.97 → 11/20 $125.53 (<span class="down">-$96.44</span>) <a class="src-ref" href="https://stockanalysis.com/stocks/nvda/history/" target="_blank" rel="noopener noreferrer">출처: StockAnalysis</a></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">1개월 종가 최고 · 최저</span>
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <div class="kpi-value" style="font-size:1.25rem;">$221.97 / $125.53</div>
+        <div class="kpi-sub">최근 1년(52주) 최저·최고: $124.50 ~ $243.37 USD <a class="src-ref" href="https://www.fool.com/investing/2026/11/20/nvidia-stock-plunge-wipes-out-nearly-usd500-billion-in-one-day-as-sec-reportedly-probes-its-accounting/" target="_blank" rel="noopener noreferrer">출처: Motley Fool</a></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">3분기 매출 (번 돈 · FY27 Q3)</span>
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <div class="kpi-value">$115.8B <span style="font-size:0.85rem;font-weight:600;color:var(--text-light);">USD</span></div>
+        <div class="kpi-sub">11/17 발표 · 1년 전보다 <span class="up">+103%</span> <a class="src-ref" href="https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/" target="_blank" rel="noopener noreferrer">출처: NVIDIA IR</a></div>
+      </div>
+    </section>
+
+    <!-- 종가 차트 -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          최근 1개월 일별 종가 차트 (USD)
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <span style="font-size:0.8rem;color:var(--text-light);">차트 위를 가리키거나 터치하면 날짜별 상세 정보를 볼 수 있습니다.</span>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-tooltip" id="chartTooltip">
+          <span class="tt-date" id="ttDate">2026-11-20 (최근 거래일)</span>
+          <span class="tt-price" id="ttPrice">$125.53 USD <span class="down">(-14.01%)</span></span>
+          <span class="tt-event" id="ttEvent">주요 이벤트: SEC 회계·공시 조사 보도</span>
+        </div>
+        <svg id="priceChart" viewBox="0 0 860 320" role="img" aria-label="엔비디아 최근 1개월 일별 종가 차트"></svg>
+      </div>
+
+      <div class="chart-controls">
+        <span style="font-size:0.8rem;color:var(--text-muted);">
+          붉은 점(●)은 주요 공시·뉴스가 있었던 거래일입니다. (출처: StockAnalysis, Investing.com)
+        </span>
+        <button class="btn" id="toggleTableBtn" type="button">일별 종가 표 보기</button>
+      </div>
+
+      <div class="table-wrap" id="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>종가 (USD)</th>
+              <th>전일 대비</th>
+              <th>시가 / 고가 / 저가</th>
+              <th>거래량</th>
+              <th>비고 (주요 이벤트)</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 회사 소개 & 더 확인할 것 -->
+    <div class="two-col">
+      <!-- 회사 소개 -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">회사 소개 <span class="badge badge-fact">사실</span></div>
+        </div>
+        <ul class="info-list">
+          <li><span class="info-key">회사명 · 종목:</span> NVIDIA Corporation (나스닥: NVDA)</li>
+          <li><span class="info-key">설립 · 본사:</span> 1993년 설립 · 미국 캘리포니아주 산타클라라</li>
+          <li><span class="info-key">시가총액 (회사 전체 몸값):</span> 약 $3.03조 ~ $3.52조 USD <span class="badge badge-fact">사실</span> <span style="font-size:0.8rem;color:var(--text-light);">(11/20 주가 하락 및 집계 방식 차이)</span></li>
+          <li>
+            <span class="info-key">무슨 일을 하는 회사인가요?</span> <span class="badge badge-ai">AI 해석</span><br />
+            원래 게임용 그래픽카드(GPU)를 만들던 회사입니다. 지금은 AI 서비스에 꼭 필요한 연산 칩과 연결 장비, 개발자 도구(CUDA)를 공급하는 대표적인 AI 반도체 회사로 알려져 있습니다.
+          </li>
+          <li>
+            <span class="info-key">최근 경영진 변화 (2026-11-12):</span> <span class="badge badge-fact">사실</span> <a class="src-ref" href="https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition" target="_blank" rel="noopener noreferrer">출처: NVIDIA Newsroom</a> <a class="src-ref" href="https://www.theguardian.com/technology/2026/nov/12/nvidia-ceo-jensen-huang-resigns" target="_blank" rel="noopener noreferrer">출처: The Guardian</a><br />
+            창업자 젠슨 황 CEO가 물러나고, 콜렛 크레스 재무책임자(CFO)가 임시 CEO를 함께 맡고 있습니다. 하비 C. 존스가 첫 이사회 의장으로 선임되었습니다.
+          </li>
+        </ul>
+      </section>
+
+      <!-- 더 확인할 것 -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">더 확인할 것 <span class="badge badge-unk">미확인 / 확인 필요</span></div>
+        </div>
+        <p class="card-desc">지금 저장된 자료만으로는 알 수 없거나, 투자 전 꼭 다시 확인해야 할 내용입니다.</p>
+
+        <div class="check-item">
+          <div class="check-title">1. SEC(증권감독기구) 조사 결과 <span class="badge badge-unk">미확인</span></div>
+          <div class="check-body">11월 20일 보도된 회계·공시 조사가 실제 처벌이나 실적 수정으로 이어질지는 아직 알 수 없습니다.</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-title">2. 정식 차기 CEO가 누구인지 <span class="badge badge-unk">미확인</span></div>
+          <div class="check-body">지금은 임시 CEO 체제입니다. 누가 언제 정식 CEO로 올지는 추가 발표를 봐야 합니다.</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-title">3. 수출 규제 및 의회 청문회 영향 <span class="badge badge-unk">확인 필요</span></div>
+          <div class="check-body">AI 칩 수출 제한과 의회 청문회가 회사가 예상한 다음 분기 매출($130B)에 영향을 줄지 살펴봐야 합니다.</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-title">4. 빠진 거래 수치와 현재 시세 <span class="badge badge-unk">확인 필요</span></div>
+          <div class="check-body">10/21~11/17의 장중 최고·최저가와 거래량, 11/20 이후 최신 주가·환율은 이 파일에 들어있지 않습니다.</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 관련 뉴스 (최대 5개) -->
+    <section class="card" aria-label="관련 뉴스">
+      <div class="card-header">
+        <div class="card-title">
+          관련 뉴스 (최대 5건)
+          <span class="badge badge-fact">사실</span>
+        </div>
+        <span style="font-size:0.8rem;color:var(--text-light);">실제 본문을 읽은 기사만 요약했으며, 접근하지 못한 자료는 상태 그대로 표시했습니다.</span>
+      </div>
+      <div class="news-list" id="newsList"></div>
+    </section>
+
+    <!-- 푸터 / 출처 -->
+    <footer class="footer">
+      <div><strong>고지 사항:</strong> 이 대시보드는 <strong>AI 초안</strong>이며, <strong>2026-11-20 미국 장 마감 기준 저장 자료</strong>를 바탕으로 제작되었습니다. <strong>실시간 시세가 아니며</strong>, 어떠한 경우에도 매수·매도 권유로 해석될 수 없습니다.</div>
+      <ul class="source-list">
+        <li>일별 종가(2026-10-21 ~ 2026-11-20, USD): StockAnalysis (2026-11-21 수집)</li>
+        <li>11/18 ~ 11/20 시가·고가·저가·거래량 및 52주 범위: Investing.com, Motley Fool</li>
+        <li>기업 개요, CEO 변동(11/12), FY27 Q3 실적(11/17), SEC 조사 보도(11/20): NVIDIA, SEC, TradingView, Washington Post</li>
+      </ul>
+    </footer>
+  </div>
+
+  <script>
+    // 로컬 file:// 환경에서도 동작하도록 저장 자료(data/nvda_1m_2026-11-20.json)와 동일한 데이터를 기본 탑재
+    const FALLBACK_DATA = {
+      daily_closes: [
+        { date: "2026-10-21", close: 221.97 },
+        { date: "2026-10-22", close: 212.21 },
+        { date: "2026-10-23", close: 210.96 },
+        { date: "2026-10-26", close: 216.00 },
+        { date: "2026-10-27", close: 217.94 },
+        { date: "2026-10-28", close: 215.38 },
+        { date: "2026-10-29", close: 213.66 },
+        { date: "2026-10-30", close: 204.64 },
+        { date: "2026-11-02", close: 202.06 },
+        { date: "2026-11-03", close: 206.69 },
+        { date: "2026-11-04", close: 200.13 },
+        { date: "2026-11-05", close: 181.60 },
+        { date: "2026-11-06", close: 186.64 },
+        { date: "2026-11-09", close: 178.67 },
+        { date: "2026-11-10", close: 168.89 },
+        { date: "2026-11-11", close: 173.73 },
+        { date: "2026-11-12", close: 166.19, event: "젠슨 황 CEO 사임 발표" },
+        { date: "2026-11-13", close: 162.85 },
+        { date: "2026-11-16", close: 156.14 },
+        { date: "2026-11-17", close: 155.46, event: "FY27 Q3 실적 발표 (매출 $115.8B)" },
+        { date: "2026-11-18", close: 150.96, open: 159.19, high: 159.70, low: 150.40, volume_m: 349.79 },
+        { date: "2026-11-19", close: 145.98, open: 152.92, high: 158.13, low: 145.71, volume_m: 322.94 },
+        { date: "2026-11-20", close: 125.53, open: 143.52, high: 143.73, low: 124.50, volume_m: 602.00, event: "SEC 회계·공시 조사 보도 (-14.01%)" }
+      ],
+      news: [
+        {
+          title: "Nvidia's accounting is a focus of US SEC investigation, sources say",
+          date: "2026-11-20",
+          publisher: "Reuters",
+          url: "https://www.reuters.com/world/us-secs-nvidia-probe-is-examining-potential-accounting-issues-sources-say-2026-11-20/",
+          access_status: "blocked",
+          access_note: "접근 불가 (HTTP 401 · 제목·날짜·매체·원문 링크만 확인, 본문 미확인)",
+          summary: null
+        },
+        {
+          title: "Nvidia Stock Plunge Wipes Out Nearly $500 Billion in One Day as SEC Reportedly Probes Its Accounting",
+          date: "2026-11-20",
+          publisher: "The Motley Fool",
+          url: "https://www.fool.com/investing/2026/11/20/nvidia-stock-plunge-wipes-out-nearly-usd500-billion-in-one-day-as-sec-reportedly-probes-its-accounting/",
+          access_status: "read",
+          access_note: "본문 확인 완료 (HTTP 200)",
+          summary: "11월 20일 주가가 약 14% 하락해 하루 만에 시가총액 약 4,910억 달러가 감소했으며, 10월 6일 최고 종가($239.24) 대비 약 48% 하락했다고 보도했습니다. 또한 WSJ의 SEC 조사 첫 보도에 이어 로이터가 회계 이슈 조사를 보도한 점을 함께 전했습니다."
+        },
+        {
+          title: "NVIDIA Announces Financial Results for Third Quarter Fiscal 2027",
+          date: "2026-11-17",
+          publisher: "NVIDIA Investor Relations",
+          url: "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/",
+          access_status: "read",
+          access_note: "본문 확인 완료 (HTTP 200)",
+          summary: "2026년 10월 25일 마감 3분기 매출이 1,158억 달러($115.8 billion)로 전년 동기 대비 103%, 전분기 대비 20% 증가했다고 발표했습니다. GAAP 매출총이익률 74.8%, 주당순이익(GAAP) $2.70, 분기 중 주주환원 281억 달러 및 주당 $0.25 배당 계획을 공개했습니다."
+        },
+        {
+          title: "NVIDIA Announces CEO Transition",
+          date: "2026-11-12",
+          publisher: "NVIDIA Newsroom",
+          url: "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
+          access_status: "read",
+          access_note: "본문 확인 완료 (HTTP 200)",
+          summary: "콜렛 크레스(Colette Kress) CFO가 정식 후임 선임 시까지 임시 CEO를 겸직하기로 했으며, 이사회는 하비 C. 존스(Harvey C. Jones)를 첫 이사회 의장(Chair of the Board)으로 선임했다고 공식 발표했습니다."
+        },
+        {
+          title: "Jensen Huang resigns as Nvidia CEO after alleged affairs",
+          date: "2026-11-12",
+          publisher: "The Guardian",
+          url: "https://www.theguardian.com/technology/2026/nov/12/nvidia-ceo-jensen-huang-resigns",
+          access_status: "read",
+          access_note: "본문 확인 완료 (HTTP 200)",
+          summary: "젠슨 황 CEO 사임 소식과 사생활 관련 의혹 보도를 다루며, 엔비디아 이사회 성명은 해당 의혹을 언급하지 않고 그의 공헌에 감사를 표했다고 전했습니다. 발표 당일 장 초반 13% 급락 후 일부 반등해 -4.3%로 마감했다고 보도했습니다."
+        }
+      ]
+    };
+
+    async function loadData() {
+      try {
+        const res = await fetch("./data/nvda_1m_2026-11-20.json");
+        if (!res.ok) throw new Error("fetch failed");
+        return await res.json();
+      } catch (_) {
+        return FALLBACK_DATA;
+      }
+    }
+
+    function renderDashboard(data) {
+      const rows = data.daily_closes || [];
+      window.__nvdaRows = rows;
+      if (rows.length) {
+        renderTable(rows);
+        renderChart(rows);
+      }
+      renderNews(data.news || FALLBACK_DATA.news);
+    }
+
+    function renderNews(items) {
+      const container = document.getElementById("newsList");
+      if (!container) return;
+      container.innerHTML = "";
+      items.slice(0, 5).forEach(item => {
+        const isRead = item.access_status === "read";
+        const statusBadge = isRead
+          ? `<span class="badge badge-fact">${item.access_note}</span>`
+          : `<span class="badge badge-unk">${item.access_note}</span>`;
+        const bodyHtml = isRead && item.summary
+          ? `<p class="news-summary"><span class="badge badge-ai" style="margin-right:6px;">본문 요약</span>${item.summary}</p>`
+          : `<p class="news-summary" style="color:var(--unk-fg);">원문 접근이 제한되어 본문을 읽지 못했습니다. 제목·날짜·매체·링크만 제공하며 내용을 추측해 요약하지 않았습니다.</p>`;
+
+        const el = document.createElement("article");
+        el.className = "news-item";
+        el.innerHTML = `
+          <div class="news-meta">
+            <span class="news-publisher">${item.publisher}</span>
+            <span>·</span>
+            <span>${item.date}</span>
+            ${statusBadge}
+          </div>
+          <h3 class="news-title">
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+          </h3>
+          ${bodyHtml}
+          <div class="news-link-row">원문 링크: <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.url}</a></div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function renderTable(rows) {
+      const tbody = document.getElementById("priceTableBody");
+      tbody.innerHTML = "";
+      // 최신 날짜가 위로 오도록 역순 출력
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const cur = rows[i];
+        const prev = i > 0 ? rows[i - 1] : null;
+        let diffHtml = '<span style="color:var(--text-light)">기준일</span>';
+        if (prev) {
+          const diff = cur.close - prev.close;
+          const pct = (diff / prev.close) * 100;
+          const cls = diff >= 0 ? "up" : "down";
+          const sign = diff >= 0 ? "+" : "";
+          diffHtml = `<span class="${cls}">${sign}${diff.toFixed(2)} (${sign}${pct.toFixed(2)}%)</span>`;
+        }
+
+        const ohl = (cur.open !== undefined)
+          ? `$${cur.open.toFixed(2)} / $${cur.high.toFixed(2)} / $${cur.low.toFixed(2)}`
+          : '<span class="badge badge-unk">미확인</span>';
+        const vol = (cur.volume_m !== undefined)
+          ? `${cur.volume_m.toFixed(2)}M주`
+          : '<span class="badge badge-unk">미확인</span>';
+        const evt = cur.event ? cur.event : "-";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${cur.date}</strong></td>
+          <td><strong>$${cur.close.toFixed(2)}</strong></td>
+          <td>${diffHtml}</td>
+          <td>${ohl}</td>
+          <td>${vol}</td>
+          <td>${evt}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function renderChart(rows) {
+      const svg = document.getElementById("priceChart");
+      const W = 860, H = 320;
+      const pad = { top: 24, right: 24, bottom: 40, left: 60 };
+      const cw = W - pad.left - pad.right;
+      const ch = H - pad.top - pad.bottom;
+
+      const prices = rows.map(r => r.close);
+      const minP = Math.floor((Math.min(...prices) - 10) / 10) * 10;
+      const maxP = Math.ceil((Math.max(...prices) + 10) / 10) * 10;
+
+      const xAt = idx => pad.left + (idx / (rows.length - 1)) * cw;
+      const yAt = val => pad.top + ((maxP - val) / (maxP - minP)) * ch;
+
+      const theme = document.body.dataset.theme || "toss";
+      const isNvidia = theme === "nvidia";
+      const isDark = theme === "dark";
+      const lineColor = isNvidia ? "#ff5c5c" : (isDark ? "#f87171" : "#f04452");
+      const gridColor = isNvidia ? "rgba(118, 185, 0, 0.16)" : (isDark ? "rgba(148, 163, 184, 0.16)" : "#e5e8eb");
+      const axisColor = isNvidia ? "#9ca3af" : (isDark ? "#94a3b8" : "#6b7684");
+      const dotBg = isNvidia ? "#111315" : (isDark ? "#0f172a" : "#ffffff");
+      const eventFill = isNvidia ? "#76b900" : lineColor;
+      const eventStroke = "#ffffff";
+
+      let svgHtml = `
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.22" />
+            <stop offset="100%" stop-color="${lineColor}" stop-opacity="0.01" />
+          </linearGradient>
+        </defs>
+      `;
+
+      // 가로 눈금선 (5단계)
+      const steps = 5;
+      for (let s = 0; s <= steps; s++) {
+        const val = minP + ((maxP - minP) / steps) * s;
+        const y = yAt(val);
+        svgHtml += `
+          <line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="${gridColor}" stroke-dasharray="3,3" />
+          <text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="${axisColor}">$${val.toFixed(0)}</text>
+        `;
+      }
+
+      // X축 날짜 라벨 (일부 간격)
+      const labelIndices = [0, 5, 10, 15, 19, rows.length - 1];
+      labelIndices.forEach(idx => {
+        if (rows[idx]) {
+          const x = xAt(idx);
+          const shortDate = rows[idx].date.slice(5); // MM-DD
+          svgHtml += `<text x="${x}" y="${H - 12}" text-anchor="middle" font-size="11" fill="${axisColor}">${shortDate}</text>`;
+        }
+      });
+
+      // 영역 & 라인 경로
+      const pts = rows.map((r, i) => `${xAt(i).toFixed(1)},${yAt(r.close).toFixed(1)}`);
+      const linePath = `M ${pts.join(" L ")}`;
+      const areaPath = `${linePath} L ${xAt(rows.length - 1).toFixed(1)},${(pad.top + ch).toFixed(1)} L ${xAt(0).toFixed(1)},${(pad.top + ch).toFixed(1)} Z`;
+
+      svgHtml += `<path d="${areaPath}" fill="url(#areaGrad)" />`;
+      svgHtml += `<path d="${linePath}" fill="none" stroke="${lineColor}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />`;
+
+      // 포커스 가이드라인
+      svgHtml += `<line id="guideLine" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + ch}" stroke="${axisColor}" stroke-dasharray="4,4" visibility="hidden" />`;
+
+      // 데이터 포인트
+      rows.forEach((r, i) => {
+        const x = xAt(i);
+        const y = yAt(r.close);
+        const isEvent = Boolean(r.event);
+        const radius = isEvent ? 5.8 : 3.4;
+        const fill = isEvent ? eventFill : dotBg;
+        const stroke = isEvent ? eventStroke : lineColor;
+        const sw = isEvent ? 2 : 1.8;
+        svgHtml += `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" data-idx="${i}" />`;
+      });
+
+      // 상호작용용 투명 오버레이
+      svgHtml += `<rect id="chartOverlay" x="${pad.left}" y="${pad.top}" width="${cw}" height="${ch}" fill="transparent" style="cursor:crosshair" />`;
+
+      svg.innerHTML = svgHtml;
+
+      const overlay = document.getElementById("chartOverlay");
+      const guideLine = document.getElementById("guideLine");
+
+      function updateTooltip(idx) {
+        const cur = rows[idx];
+        const prev = idx > 0 ? rows[idx - 1] : null;
+        const x = xAt(idx);
+
+        guideLine.setAttribute("x1", x);
+        guideLine.setAttribute("x2", x);
+        guideLine.setAttribute("visibility", "visible");
+
+        document.getElementById("ttDate").textContent = `${cur.date}`;
+        let diffStr = "";
+        if (prev) {
+          const diff = cur.close - prev.close;
+          const pct = (diff / prev.close) * 100;
+          const cls = diff >= 0 ? "up" : "down";
+          const sign = diff >= 0 ? "+" : "";
+          diffStr = ` <span class="${cls}">(${sign}${pct.toFixed(2)}%)</span>`;
+        }
+        document.getElementById("ttPrice").innerHTML = `$${cur.close.toFixed(2)} USD${diffStr}`;
+        document.getElementById("ttEvent").textContent = cur.event ? `주요 이벤트: ${cur.event}` : "특이 이벤트 기록 없음";
+      }
+
+      function handlePointer(clientX) {
+        const rect = svg.getBoundingClientRect();
+        const relX = ((clientX - rect.left) / rect.width) * W;
+        const ratio = Math.max(0, Math.min(1, (relX - pad.left) / cw));
+        const idx = Math.round(ratio * (rows.length - 1));
+        updateTooltip(idx);
+      }
+
+      overlay.addEventListener("mousemove", e => handlePointer(e.clientX));
+      overlay.addEventListener("touchstart", e => {
+        if (e.touches[0]) handlePointer(e.touches[0].clientX);
+      }, { passive: true });
+      overlay.addEventListener("touchmove", e => {
+        if (e.touches[0]) handlePointer(e.touches[0].clientX);
+      }, { passive: true });
+    }
+
+    document.getElementById("toggleTableBtn").addEventListener("click", () => {
+      const wrap = document.getElementById("tableWrap");
+      const btn = document.getElementById("toggleTableBtn");
+      const isOpen = wrap.classList.toggle("open");
+      btn.textContent = isOpen ? "일별 종가 표 접기" : "일별 종가 표 보기";
+    });
+
+    function applyTheme(theme) {
+      document.body.dataset.theme = theme;
+      document.querySelectorAll(".theme-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.themeTarget === theme);
+      });
+      if (window.__nvdaRows && window.__nvdaRows.length) {
+        renderChart(window.__nvdaRows);
+      }
+      try {
+        localStorage.setItem("nvda_dashboard_theme", theme);
+      } catch (_) {}
+    }
+
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        applyTheme(btn.dataset.themeTarget);
+      });
+    });
+
+    try {
+      const savedTheme = localStorage.getItem("nvda_dashboard_theme");
+      if (savedTheme === "dark" || savedTheme === "toss" || savedTheme === "nvidia") {
+        applyTheme(savedTheme);
+      }
+    } catch (_) {}
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      window.print();
+    });
+
+    let themeBeforePrint = null;
+    window.addEventListener("beforeprint", () => {
+      themeBeforePrint = document.body.dataset.theme || "toss";
+      if (themeBeforePrint !== "toss") {
+        document.body.dataset.theme = "toss";
+        if (window.__nvdaRows && window.__nvdaRows.length) {
+          renderChart(window.__nvdaRows);
+        }
+      }
+    });
+    window.addEventListener("afterprint", () => {
+      if (themeBeforePrint && themeBeforePrint !== "toss") {
+        document.body.dataset.theme = themeBeforePrint;
+        if (window.__nvdaRows && window.__nvdaRows.length) {
+          renderChart(window.__nvdaRows);
+        }
+      }
+      themeBeforePrint = null;
+    });
+
+    loadData().then(renderDashboard);
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "company": "NVIDIA Corporation",
+    "exchange": "NASDAQ",
+    "ticker": "NVDA",
+    "currency": "USD",
+    "as_of_date": "2026-11-20",
+    "collected_at": "2026-11-21T15:20:00+09:00",
+    "is_realtime": false,
+    "sources": [
+      {
+        "name": "StockAnalysis",
+        "scope": "2026-10-21 ~ 2026-11-20 일별 종가(USD)"
+      },
+      {
+        "name": "Investing.com / Motley Fool",
+        "scope": "2026-11-18 ~ 2026-11-20 시가·고가·저가·거래량 및 52주 범위"
+      },
+      {
+        "name": "NVIDIA / SEC / TradingView / Washington Post",
+        "scope": "기업 개요, 2026-11-12 CEO 사임, 2026-11-17 FY27 Q3 실적, 2026-11-20 SEC 조사 보도"
+      }
+    ]
+  },
+  "company_profile": {
+    "founded": 1993,
+    "headquarters": "Santa Clara, California, USA",
+    "core_business": "GPU(그래픽 처리 장치), AI 가속기, 데이터센터 네트워크 인프라, CUDA 소프트웨어 플랫폼",
+    "market_cap_usd_range": "약 3.03조 ~ 3.52조 달러 (2026-11-20 급락 및 집계 기준별 차이)",
+    "week_52_high_usd": 243.37,
+    "week_52_low_usd": 124.50,
+    "recent_leadership": {
+      "event_date": "2026-11-12",
+      "summary": "공동 창업자 젠슨 황(Jensen Huang) CEO 사임 (11월 11일 이사회 수리), 콜렛 크레스(Colette Kress) CFO가 임시 CEO 겸직, 하비 C. 존스(Harvey C. Jones)가 첫 독립 이사회 의장 선임"
+    },
+    "recent_earnings": {
+      "event_date": "2026-11-17",
+      "quarter": "FY2027 Q3",
+      "revenue_usd_billions": 115.8,
+      "revenue_yoy_pct": 103,
+      "q4_guidance_usd_billions": 130
+    }
+  },
+  "daily_closes": [
+    { "date": "2026-10-21", "close": 221.97 },
+    { "date": "2026-10-22", "close": 212.21 },
+    { "date": "2026-10-23", "close": 210.96 },
+    { "date": "2026-10-26", "close": 216.00 },
+    { "date": "2026-10-27", "close": 217.94 },
+    { "date": "2026-10-28", "close": 215.38 },
+    { "date": "2026-10-29", "close": 213.66 },
+    { "date": "2026-10-30", "close": 204.64 },
+    { "date": "2026-11-02", "close": 202.06 },
+    { "date": "2026-11-03", "close": 206.69 },
+    { "date": "2026-11-04", "close": 200.13 },
+    { "date": "2026-11-05", "close": 181.60 },
+    { "date": "2026-11-06", "close": 186.64 },
+    { "date": "2026-11-09", "close": 178.67 },
+    { "date": "2026-11-10", "close": 168.89 },
+    { "date": "2026-11-11", "close": 173.73 },
+    { "date": "2026-11-12", "close": 166.19, "event": "젠슨 황 CEO 사임 발표" },
+    { "date": "2026-11-13", "close": 162.85 },
+    { "date": "2026-11-16", "close": 156.14 },
+    { "date": "2026-11-17", "close": 155.46, "event": "FY27 Q3 실적 발표 (매출 $115.8B)" },
+    { "date": "2026-11-18", "close": 150.96, "open": 159.19, "high": 159.70, "low": 150.40, "volume_m": 349.79 },
+    { "date": "2026-11-19", "close": 145.98, "open": 152.92, "high": 158.13, "low": 145.71, "volume_m": 322.94 },
+    { "date": "2026-11-20", "close": 125.53, "open": 143.52, "high": 143.73, "low": 124.50, "volume_m": 602.00, "event": "SEC 회계·공시 조사 보도 (-14.01%)" }
+  ],
+  "news": [
+    {
+      "title": "Nvidia's accounting is a focus of US SEC investigation, sources say",
+      "date": "2026-11-20",
+      "publisher": "Reuters",
+      "url": "https://www.reuters.com/world/us-secs-nvidia-probe-is-examining-potential-accounting-issues-sources-say-2026-11-20/",
+      "access_status": "blocked",
+      "access_note": "접근 불가 (HTTP 401 · 제목·날짜·매체·원문 링크만 확인, 본문 미확인)",
+      "summary": null
+    },
+    {
+      "title": "Nvidia Stock Plunge Wipes Out Nearly $500 Billion in One Day as SEC Reportedly Probes Its Accounting",
+      "date": "2026-11-20",
+      "publisher": "The Motley Fool",
+      "url": "https://www.fool.com/investing/2026/11/20/nvidia-stock-plunge-wipes-out-nearly-usd500-billion-in-one-day-as-sec-reportedly-probes-its-accounting/",
+      "access_status": "read",
+      "access_note": "본문 확인 완료 (HTTP 200)",
+      "summary": "11월 20일 주가가 약 14% 하락해 하루 만에 시가총액 약 4,910억 달러가 감소했으며, 10월 6일 최고 종가($239.24) 대비 약 48% 하락했다고 보도했습니다. 또한 WSJ의 SEC 조사 첫 보도에 이어 로이터가 회계 이슈 조사를 보도한 점을 함께 전했습니다."
+    },
+    {
+      "title": "NVIDIA Announces Financial Results for Third Quarter Fiscal 2027",
+      "date": "2026-11-17",
+      "publisher": "NVIDIA Investor Relations",
+      "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/",
+      "access_status": "read",
+      "access_note": "본문 확인 완료 (HTTP 200)",
+      "summary": "2026년 10월 25일 마감 3분기 매출이 1,158억 달러($115.8 billion)로 전년 동기 대비 103%, 전분기 대비 20% 증가했다고 발표했습니다. GAAP 매출총이익률 74.8%, 주당순이익(GAAP) $2.70, 분기 중 주주환원 281억 달러 및 주당 $0.25 배당 계획을 공개했습니다."
+    },
+    {
+      "title": "NVIDIA Announces CEO Transition",
+      "date": "2026-11-12",
+      "publisher": "NVIDIA Newsroom",
+      "url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition",
+      "access_status": "read",
+      "access_note": "본문 확인 완료 (HTTP 200)",
+      "summary": "콜렛 크레스(Colette Kress) CFO가 정식 후임 선임 시까지 임시 CEO를 겸직하기로 했으며, 이사회는 하비 C. 존스(Harvey C. Jones)를 첫 이사회 의장(Chair of the Board)으로 선임했다고 공식 발표했습니다."
+    },
+    {
+      "title": "Jensen Huang resigns as Nvidia CEO after alleged affairs",
+      "date": "2026-11-12",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/technology/2026/nov/12/nvidia-ceo-jensen-huang-resigns",
+      "access_status": "read",
+      "access_note": "본문 확인 완료 (HTTP 200)",
+      "summary": "젠슨 황 CEO 사임 소식과 사생활 관련 의혹 보도를 다루며, 엔비디아 이사회 성명은 해당 의혹을 언급하지 않고 그의 공헌에 감사를 표했다고 전했습니다. 발표 당일 장 초반 13% 급락 후 일부 반등해 -4.3%로 마감했다고 보도했습니다."
+    }
+  ]
+}
